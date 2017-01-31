@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Travel Time</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{%static 'login/css/materialize.css' %}">
+		<link rel="stylesheet" href="{% static 'login/css/style.css' %}">
+	</head>
+	<body>
+		<div id="container">
+			{% if 'id' in request.session %}
+			<header class="teal-border border-bottom">
+				<h1>Pokies!</h1>
+				<div id="session-section">
+					{% if 'id' in request.session %}
+					<span id="greeting" class="">Welcome, {{request.session.first_name}}</span>
+					<a class="session-button" href="{% url 'login:logout' %}">Logout</a>
+					{% else %}
+					<span id="greeting" class="">Welcome! Please feel free to </span>
+					<a href="#login-modal" class="session-button">Login</a>
+					<a href="#register-modal" class="session-button">Register</a>
+					{% endif %}
+				</div>
+			</header>
+			<main>
+				{% if messages %}
+				{% for message in messages %}
+				<p class="flash-message green">{{message}}</p>
+				{% endfor %}
+				{% endif%}
+				<h3 class="table-head">Hi {{request.session.first_name}}</h3>
+				<h5>{{user_pokes | length}} people poked you!</h5>
+				<section class="user-history">
+					{% for poke in user_pokes %}
+						<p>{{poke.poker.name}} poked you {{poke.num_pokes}} time(s).</p>
+					{% endfor %}
+				</section>
+				<h3 class="table-head">People you may want to poke:</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Alias</th>
+							<th>Email Address</th>
+							<th>Poke History</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in other_pokes %}
+							<tr>
+								<td>{{user.pokee.name}}</td>
+								<td>{{user.pokee.alias}}</td>
+								<td>{{user.pokee.email}}</td>
+								<td>{{user.history}} pokes</td>
+								<td><a href="{% url 'pokes:poke' id=user.pokee.id %}" class="route-add-trip">POKE!!</a></td>
+							</tr>
+						{% endfor %}
+						{% for user in other_users %}
+							<tr>
+								<td>{{user.name}}</td>
+								<td>{{user.alias}}</td>
+								<td>{{user.email}}</td>
+								<td>0 pokes</td>
+								<td><a href="{% url 'pokes:poke' id=user.id %}" class="route-add-trip">POKE!!</a></td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</main>
+			{% else %}
+			<h3>I'm sorry, you must log in before doing any poking!</h3>
+			<h5><a class="session-button" href="{% url 'login:index' %}">Go Home</a></h5>
+			{% endif %}
+		</div>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="{% static 'login/js/materialize.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'login/js/app.js' %}">
+
+		</script>
+	</body>
+</html>
